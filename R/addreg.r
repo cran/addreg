@@ -5,16 +5,18 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     if (is.character(family))
         family <- get(family, mode = "function", envir = parent.frame())
     if (is.function(family))
-        family <- family(link = "identity")
+		if (identical(family, negbin1)) family <- family(link = "identity", phi = NA)
+        else family <- family(link = "identity")
     if (is.null(family$family)) {
         print(family)
         stop("'family' not recognized")
     }
     
-    if (family$link!="identity" | !(family$family %in% c("poisson","binomial")))
-        stop("family(link) must be one of: poisson(identity), binomial(identity)")
+    if (family$link!="identity" | !(family$family %in% c("poisson","binomial") | substr(family$family,1,7) == "negbin1"))
+        stop("family(link) must be one of: poisson(identity), binomial(identity), negbin1(identity)")
     
     if (family$family == "poisson") method <- "nnpois"
+    else if (substr(family$family,1,7) == "negbin1") method <- "nnnegbin"
     else if (family$family == "binomial") method <- "addbin"
     
     if (missing(data)) data <- environment(formula)
@@ -73,13 +75,17 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
 		X <- model.matrix(allref$terms, allref$data)
         if (family$family == "poisson")
             best.model <- nnpois(Y, X, standard, offset, allref$start.new, control2)
-        else if(family$family == "binomial")
+        else if (substr(family$family,1,7) == "negbin1")
+            best.model <- nnnegbin(Y, X, standard, offset, allref$start.new, control2)
+        else if (family$family == "binomial")
             best.model <- addbin(Y, X, allref$start.new, control, allref)
         best.loglik <- best.model$loglik
         best.param <- 0
         allconv <- best.model$converged
-        if(control$trace > 0 & control$trace <= 1)
-			if(method != "addbin")
+        if (control$trace > 0 & control$trace <= 1)
+			if (substr(family$family,1,7) == "negbin1") cat("Log-likelihood =",best.model$loglik,
+                                                            "Iterations -",best.model$iter,"\n")
+			else if (method != "addbin")
                 cat("Deviance =", best.model$deviance, "Iterations -", best.model$iter, "\n")
 	} else {
 		design.all <- expand.grid(lapply(design.numref, seq_len))
@@ -90,11 +96,15 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
 			X <- addreg.design(allref$terms, allref$data, allref$allref, design.all[param,])
             if (family$family == "poisson")
                 thismodel <- nnpois(Y, X, standard, offset, if (param == 1) allref$start.new else NULL, control2)
-            else if(family$family == "binomial")
+            else if (substr(family$family,1,7) == "negbin1")
+                thismodel <- nnnegbin(Y, X, standard, offset, if (param == 1) allref$start.new else NULL, control2)
+            else if (family$family == "binomial")
                 thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref)
             if (!thismodel$converged) allconv <- FALSE
             if (control$trace > 0 & control$trace <= 1) 
-				if(method != "addbin")
+				if (substr(family$family,1,7) == "negbin1") cat("Log-likelihood =",thismodel$loglik,
+                                                                "Iterations -",thismodel$iter,"\n")
+				else if (method != "addbin")
                     cat("Deviance =",thismodel$deviance,"Iterations -",thismodel$iter,"\n")
             if (thismodel$loglik > best.loglik) {
                 best.model <- thismodel
@@ -112,7 +122,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
                         call. = FALSE)
         if (best.model$boundary) {
             if (best.model$coefficients[1] < control$bound.tol) {
-                if (family$family == "poisson")
+                if (family$family == "poisson" || substr(family$family,1,7) == "negbin1")
                     warning(gettextf("%s: fitted rates numerically 0 occurred",
                                         method), call. = FALSE)
                 else if (family$family == "binomial")
@@ -135,6 +145,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     }
     
     fit <- list(coefficients = coefs)
+    if (substr(family$family,1,7) == "negbin1") fit$scale <- best.model$scale
     
     fit2 <- list(residuals = best.model$residuals,
                 fitted.values = best.model$fitted.values, 
@@ -146,7 +157,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
                 prior.weights = best.model$prior.weights, weights = rep(1,NROW(Y)),
                 df.residual = best.model$df.residual, df.null = best.model$df.null,
                 y = best.model$y, x = design)
-    if(model) {
+    if (model) {
         fit2$model <- mf
         if (family$family == "binomial") fit2$model.addpois <- best.model$model.addpois
     }
@@ -155,7 +166,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
                 terms = mt, data = data, offset = best.model$offset, standard = best.model$standard, 
                 control = control, method = method, xlevels = .getXlevels(mt, mf),
                 xminmax = .getXminmax(mt, mf))
-    if(family$family == "poisson") {
+    if (family$family == "poisson" || substr(family$family,1,7) == "negbin1") {
         fit3$nn.coefficients = nn.coefs
         fit3$nn.x = nn.design
     }

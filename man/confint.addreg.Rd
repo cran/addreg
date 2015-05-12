@@ -29,7 +29,7 @@ a fitted \code{\link{addreg}} model.
 }
 }
 \details{
-Calculates confidence intervals assuming asymptotic normality, using \code{\link{vcov.addreg}(object)}. As
+Calculates confidence intervals for model parameters assuming asymptotic normality, using \code{\link{vcov.addreg}(object)}. As
 such, if the MLE is on the boundary of the parameter space,
 (i.e. \code{object$boundary == TRUE}) the normality assumption 
 is invalid and \code{NA} is returned.
@@ -41,7 +41,7 @@ labelled as (1-level)/2 and 1-(1-level)/2 in \% (by default
 2.5\% and 97.5\%).
 }
 \author{
-Mark Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
 }
 \seealso{
 \code{\link{confint.default}}, \code{\link{vcov.addreg}}

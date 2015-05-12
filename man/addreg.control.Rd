@@ -5,9 +5,9 @@ Auxiliary for Controlling addreg Fitting
 }
 \description{
 Auxiliary function for \code{\link{addreg}} fitting.
-Typically only used internally by \code{\link{nnpois}} and
-\code{\link{addbin}}, but may be used to construct a
-\code{control} argument to these functions.
+Typically only used internally by \code{\link{nnpois}},
+\code{\link{nnnegbin}} and \code{\link{addbin}}, but may 
+be used to construct a \code{control} argument to these functions.
 }
 \usage{
 addreg.control(bound.tol = 1e-06, epsilon = 1e-10, maxit = 10000, trace = 0)
@@ -28,23 +28,23 @@ addreg.control(bound.tol = 1e-06, epsilon = 1e-10, maxit = 10000, trace = 0)
   converged when \eqn{\sqrt{
   \sum (\theta_{old} - \theta_{new})^2} / \sqrt {\sum
   \theta_{old}^2} < \epsilon}, where \eqn{\theta} is the
-  vector of parameter estimates.
+  vector of parameter estimates. See \code{\link{conv.test}}.
 }
   \item{maxit}{
 	integer giving the maximum number of EM
-  algorithm iterations for a given parameterization.
+  algorithm iterations for a given parameterisation.
 }
   \item{trace}{
 	number indicating level of output that
   should be produced. >= 1 gives output for each
-  parameterization, >= 2 gives output at each iteration.
+  parameterisation, >= 2 gives output at each iteration.
 }
 }
 \details{
 This is used similarly to \code{\link{glm.control}}. The
 \code{control} argument of \code{\link{addreg}} is by
-default passed to the \code{\link{control}} argument of
-\code{\link{nnpois}} or \code{\link{addbin}}.
+default passed to the \code{control} argument of
+\code{\link{nnpois}}, \code{\link{nnnegbin}} or \code{\link{addbin}}.
 
 When \code{trace} is greater than zero, calls to
 \code{\link{cat}} produce the output. Hence,
@@ -56,14 +56,14 @@ A list with components named as the arguments.
 }
 
 \author{
-Mark Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
 }
 
 \seealso{
 \code{\link{glm.control}}, the equivalent function for
 \code{\link{glm}} fitting.
 
-\code{\link{nnpois}} and \code{\link{addbin}}, the
+\code{\link{nnpois}}, \code{\link{nnnegbin}} and \code{\link{addbin}}, the
 functions used to fit \code{\link{addreg}} models.
 }
 \examples{

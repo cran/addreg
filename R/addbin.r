@@ -9,7 +9,7 @@ addbin <- function(y, x, start = NULL, control = list(), allref)
     
     n <- weights <- rep(1, nobs)
     
-	bin.id.link <- bin.identity()
+	bin.id.link <- make.link("identity")
     fam <- binomial(link = bin.id.link)
     eval(fam$initialize)
     

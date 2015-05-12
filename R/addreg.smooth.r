@@ -5,14 +5,21 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
 	if(is.character(family))
         family <- get(family, mode = "function", envir = parent.frame())
     if(is.function(family))
-        family <- family(link = "identity")
+        if (identical(family, negbin1)) {
+            family <- family(link = "identity", phi = NA)
+            famname <- "negbin1"
+        }
+        else {
+            family <- family(link = "identity")
+            famname <- family$family
+        }
     if(is.null(family$family)) {
         print(family)
         stop("'family' not recognized")
     }
     
-    if(family$link!="identity" | !(family$family %in% c("poisson","binomial")))
-        stop("family(link) must be one of: poisson(identity), binomial(identity)")
+    if(family$link!="identity" | !(family$family %in% c("poisson","binomial") | substr(family$family,1,7) == "negbin1"))
+        stop("family(link) must be one of: poisson(identity), binomial(identity), negbin1(identity)")
 	
 	if(missing(data)) data <- environment(formula)
 	
@@ -67,7 +74,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
 			data.new[["(offset)"]] = os
 			data.new[["(standard)"]] = std
 			modelf <- call("addreg",formula = eval(modelspec$formula), mono = eval(modelspec$monotonic), 
-                        family = family$family, data = as.name("data.new"), control = control2, 
+                        family = famname, data = as.name("data.new"), control = control2, 
 						warn = FALSE, fit = TRUE)
 			if (!is.null(os)) modelf$offset <- as.name("(offset)")
 			if (!is.null(std)) modelf$standard <- as.name("(standard)")
@@ -101,7 +108,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
     }
 	
 	if(bestk.model$boundary) {
-		if(family$family %in% c("poisson","negbin")) {
+		if(family$family == "poisson" || substr(family$family,1,7) == "negbin1") {
 			if(bestk.model$nn.coefficients[1] < control$bound.tol)
 				warning(gettextf("%s: fitted rates numerically 0 occurred",
 									bestk.model$method), call. = FALSE)
@@ -117,14 +124,17 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
 									bestk.model$method), call. = FALSE)
 		}
 	}  
+	
 	reparam.call <- call("addreg.smooth.reparameterise", coefficients = bestk.model$coefficients,
 							interpret = gp, allref = bestk.allref, knots = bestk.knots, 
 							design.knots = allknots[bestk,,drop=FALSE], design.param = bestk.param)
+
 	if(!missing(subset)) reparam.call$subset <- subset
 	if(!missing(na.action)) reparam.call$na.action <- na.action
 	reparam <- eval(reparam.call)
 	
 	fit <- list(coefficients = reparam$coefs)
+	if(substr(family$family,1,7) == "negbin1") fit$scale <- bestk.model$scale
 	
 	fit2 <- list(residuals = bestk.model$residuals,
 				fitted.values = bestk.model$fitted.values,

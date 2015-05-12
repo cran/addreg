@@ -99,7 +99,7 @@ nnpois <- function(y, x, standard, offset, start, control = list())
   list(coefficients = coefnew, residuals = residuals, fitted.values = mu, rank = nvars, family = fam,
        linear.predictors = eta, deviance = dev.new, aic = aic.model, aic.c = aic.c.model,
        null.deviance = nulldev, iter = iter, weights = weights, prior.weights = weights,
-       standard = standard, df.residual = resdf, df.null = nulldf, y = y,
+       standard = standard, df.residual = resdf, df.null = nulldf, y = y, 
        converged = converged, boundary = boundary, loglik = ll.new, nn.design = x)
   
 }

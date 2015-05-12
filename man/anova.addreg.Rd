@@ -13,9 +13,9 @@ GLM fitted using \code{\link{addreg}}.
 }
 \arguments{
   \item{object, \dots}{
-	objects of class \code{addreg},
+	objects of class \code{"addreg"},
   typically the result of a call to \code{\link{addreg}},
-  or a list of \code{objects} for the "\code{addreglist}"
+  or a \code{\link{list}} of \code{objects} for the "\code{addreglist}"
   method.
 }
   \item{test}{
@@ -40,8 +40,8 @@ space will be automatically removed from the list (with a
 warning), because asymptotic results to not apply to such
 models.
 
-The table will optionally contain test statistics (and P
-values) comparing the reduction in deviance for the row to
+The table will optionally contain test statistics (and p-values) 
+comparing the reduction in deviance for the row to
 the residuals. Mallows' \emph{Cp} statistic is the residual
 deviance plus twice the estimate of \eqn{\sigma^2} times
 the residual degrees of freedom, which is closely related
@@ -55,12 +55,12 @@ An object of class \code{"anova"} inheriting from class
 \code{"data.frame"}.
 }
 \author{
-Mark Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
 }
 \section{Warning}{
   The comparison between two or more models will only be
   valid if they are fitted to the same dataset. This may be
-  a problem if there are missing values and \code{R}'s
+  a problem if there are missing values and R's
   default of \code{na.action = na.omit} is used, and
   \code{anova} will detect this with an error.
 }

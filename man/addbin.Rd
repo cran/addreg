@@ -30,14 +30,14 @@ addbin(y, x, start = NULL, control = list(), allref)
   \code{\link{addreg.control}}.
 }
   \item{allref}{
-	a list of all parameterizations for this
+	a list of all parameterisations for this
   model, obtained from \code{\link{addreg.allref}}.
 }
 }
 \details{
 An additive binomial fit can be converted into an additive
-Poisson fit via the multinomial-Poisson transformation (see
-Baker (1994)). This function transforms the data as
+Poisson fit via the multinomial--Poisson transformation 
+(Baker, 1994). This function transforms the data as
 described by Donoghoe and Marschner (2014) and passes it to \code{\link{addreg}}
 with a Poisson family to get the maximum likelihood
 estimate. The coefficients (and other values) from the
@@ -45,24 +45,24 @@ Poisson model are transformed back to relate to the
 additive binomial model.
 
 This is a workhorse function for \code{\link{addreg}} when
-a \code{binomial} family is specified. It would not usually
+a \code{\link{binomial}} family is specified. It would not usually
 be called directly.
 }
 \value{
 A list of (most of) the components needed for an object of
-class "\code{addreg}"; see \code{\link{addreg}} for
+class \code{"addreg"}; see \code{\link{addreg}} for
 details.
 }
 \references{
-Baker, S.G. (1994): "The multinomial-Poisson
-transformation," \emph{The Statistician}, 43, 495--504.
+Baker, S. G. (1994). The multinomial--Poisson
+transformation. \emph{The Statistician} 43(4): 495--504.
 
-Donoghoe, M.W. and I.C. Marschner (2014): "Stable computational methods
-for additive binomial models with application to adjusted risk differences", 
-\emph{Computational Statistics & Data Analysis}, 80, 184--196.
+Donoghoe, M. W. and I. C. Marschner (2014). Stable computational methods
+for additive binomial models with application to adjusted risk differences. 
+\emph{Computational Statistics and Data Analysis} 80: 184--196.
 }
 \author{
-Mark Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
 }
 
 \seealso{

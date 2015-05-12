@@ -34,21 +34,21 @@ contr.isotonic(n, perm, contrasts = TRUE, sparse = FALSE)
 \details{
 This function is used within \code{\link{addreg.design}}
 for categorical covariates with a specified order under a
-particular parameterization. For Poisson models, this
+particular parameterisation. For Poisson and negative binomial models, this
 occurs if a categorical covariate is defined as monotonic;
-for binomial models, each parameterization defines a
+for binomial models, each parameterisation defines a
 permutation of the levels that must be monotonically
 increasing.
 
 In the order specified by \code{perm}, the coefficient
 associated with each level is the sum of increments between
 the preceding levels. That is, the first level is defined
-as 0, the second as 0 + d2, the third as 0 + d2 + d3, and
+as \eqn{0}, the second as \eqn{0 + d_2}, the third as \eqn{0 + d_2 + d_3}, and
 so on.  In fitting the model, these increments are
 constrained to be non-negative.
 
-Note that these are not 'contrasts' as defined in the
-theory for linear models, rather this is used to define the
+Note that these are not `contrasts' as defined in the
+theory for linear models; rather this is used to define the
 \code{contrasts} attribute of each variable so that
 \code{\link{model.matrix}} produces the desired design
 matrix.
@@ -59,7 +59,7 @@ A matrix with \code{n} rows and \code{k} columns, with
 \code{k=n} if \code{contrasts} is \code{FALSE}.
 }
 \author{
-Mark Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
 }
 \seealso{
 \code{\link{addreg.design}}, which uses

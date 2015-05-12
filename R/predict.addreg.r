@@ -80,6 +80,7 @@ predict.addreg <- function (object, newdata = NULL, type = c("link", "response",
     }
     if (missing(newdata) && !is.null(na.act))
         predictor <- napredict(na.act, predictor)
+    
     switch(type, response = {predictor <- family(object)$linkinv(predictor)},
             link = , terms =)
     predictor

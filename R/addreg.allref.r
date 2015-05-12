@@ -26,16 +26,19 @@ addreg.allref <- function(object, data = environment(object), mono, family, star
     nvar <- length(termlist)
 	
 	npar <- sum(as.numeric(!isF))
-	if(any(isF)) npar <- npar + sum(sapply(data[isF], function(x) nlevels(factor(x)) - 1)) 
+	if (any(isF)) npar <- npar + sum(sapply(data[isF], function(x) nlevels(factor(x)) - 1))
+	if (substr(family$family,1,7) == "negbin1") npar <- npar + 1
     
-    if(missing(mono)) mono <- rep(FALSE, nvar)
-    if(is.null(mono)) mono <- rep(FALSE, nvar)
+    if (missing(mono)) mono <- rep(FALSE, nvar)
+    if (is.null(mono)) mono <- rep(FALSE, nvar)
     monotonic <- rep(FALSE, nvar)
     names(monotonic) <- termlist
     monotonic[mono] <- TRUE
 	names(monotonic) <- termlist
     
     allref <- list()
+	
+	start.new.scale <- NULL
 	
 	if (!is.null(start)) {
 		if (length(start) != npar)
@@ -44,6 +47,10 @@ addreg.allref <- function(object, data = environment(object), mono, family, star
 		start.orig <- start
 		start.new.int <- start.orig[1]
 		start.new.other <- start.orig[-1]
+		if (substr(family$family,1,7) == "negbin1") {
+			start.new.scale <- start.new.other[length(start.new.other)]
+			start.new.other <- start.new.other[-length(start.new.other)]
+		}
 		this.start <- 2
 	} else {
 		start.new.int <- NULL
@@ -120,5 +127,5 @@ addreg.allref <- function(object, data = environment(object), mono, family, star
 			}
 		}
     }
-    list(allref = allref, terms = t, data = data, monotonic = monotonic, start.new = c(start.new.int, start.new.other))
+    list(allref = allref, terms = t, data = data, monotonic = monotonic, start.new = c(start.new.int, start.new.other, start.new.scale))
 }

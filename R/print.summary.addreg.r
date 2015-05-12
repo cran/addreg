@@ -42,11 +42,20 @@ print.summary.addreg <- function(x, digits = max(3L, getOption("digits") - 3L),
     printCoefmat(coefs, digits = digits, signif.stars = signif.stars, 
                  na.print = "NA", ...)
   }
+  
+  if(!is.null(x$phi)) {
+	se.phi <- sqrt(x$var.phi)
+	dp <- if(!is.nan(se.phi)) max(2 - floor(log10(se.phi)), 0) else max(2 - floor(log10(x$phi)), 0)
+    cat("\n              phi: ", format(round(x$phi, dp), 
+        nsmall = dp), "\n        Std. Err.: ", if(!is.nan(se.phi)) format(round(se.phi, 
+        dp), nsmall = dp) else "NA", "\n")
+  }
+  
   cat("\n", apply(cbind(paste(format(c("Null", 
                                        "Residual"), justify = "right"), "deviance:"), format(unlist(x[c("null.deviance", 
                                                                                                         "deviance")]), digits = max(5L, digits + 1L)), " on", 
                                        format(unlist(x[c("df.null", "df.residual")])), " degrees of freedom\n"), 
-                                       1L, paste, collapse = " "), sep = "")  
+                                       1L, paste, collapse = " "), sep = "")
   if (nzchar(mess <- naprint(x$na.action))) 
     cat("  (", mess, ")\n", sep = "")
   cat("\n", apply(cbind(paste(format(c("AIC:","AIC_c:"), justify = "right"), format(unlist(x[c("aic","aic.c")]), digits = max(4L, digits + 1L)),"\n")), 1L, paste, collapse = " "),  

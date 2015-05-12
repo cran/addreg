@@ -1,9 +1,15 @@
 ﻿**  denotes quite substantial/important changes
 *** denotes really big changes 
 
+2.0
+
+*** Added additive negative binomial regression (family = negbin1)
+*   Removed "bin.identity" link function, avoided error in simpler way
+*   Minor documentation changes, including updated references
+
 1.2
 
-**   Introduced "bin.identity" link function. This is identical to the standard "identity" link, but does not cause an error when used with binomial family.
+**   Introduced "bin.identity" link function. This is identical to the standard "identity" link, but does not cause an error when used with binomial family
 *    Minor corrections to avoid codetools errors
 
 1.1

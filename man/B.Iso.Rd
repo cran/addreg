@@ -6,7 +6,7 @@ Defining Smooths in addreg.smooth Formulae
 }
 \description{
 Function used in the definition of smooth terms within \code{\link{addreg.smooth}}
-model formulae. The function does not evaluate a smooth - it exists purely to help
+model formulae. The function does not evaluate a smooth --- it exists purely to help
 set up a model using smooths.
 }
 \usage{
@@ -64,14 +64,14 @@ specified). \code{NA} for \code{Iso}.}
 \code{NA} for \code{Iso}.}
 }
 \author{
-Mark Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
 }
 
 \seealso{
 \code{\link{addreg.smooth}},
 \code{\link{addreg.smooth.design}}
 
-\code{\link[mgcv]{s}} performs a similar function in the \code{mgcv} package.
+\code{\link[mgcv]{s}} performs a similar function in the \code{\link[mgcv]{mgcv}} package.
 }
 \examples{
 ## See example(addreg.smooth) for an example of specifying smooths in model

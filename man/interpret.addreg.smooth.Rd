@@ -4,7 +4,7 @@
 Interpret an addreg.smooth Formula
 }
 \description{
-This is an internal function of package \code{\link{addreg-package}}.
+This is an internal function of package \code{\link[=addreg-package]{addreg}}.
 It is a service routine for \code{\link{addreg.smooth}} which interprets the
 smooth parts of the model formula and returns modified formulas to be used
 in the fitting functions.
@@ -37,7 +37,7 @@ the \code{formula}.}
 \item{terms}{the result of running \code{\link{terms.formula}(formula, specials = c("B", "Iso"))}.}
 }
 \author{
-Mark Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
 }
 \seealso{
 \code{\link{addreg.smooth}}

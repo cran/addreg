@@ -3,7 +3,7 @@ addreg.smooth.allref <- function(object, data = environment(object), mono, famil
     t <- if(missing(data))
         terms(object)
     else terms(object, data = data)
-    
+
     termlist <- attr(t, "term.labels")
     nvar <- length(termlist)
     smoothlist <- sapply(addreg.smooth.spec$smooth.spec,"[[","term")
