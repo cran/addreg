@@ -9,7 +9,9 @@ using an ECME algorithm,
 where each of the mean coefficients is restricted to be non-negative.
 }
 \usage{
-nnnegbin(y, x, standard, offset, start, control = list())
+nnnegbin(y, x, standard, offset, start, control = addreg.control(),
+         accelerate = c("em", "squarem", "pem", "qn"),
+         control.method = list())
 }
 \arguments{
   \item{y}{
@@ -34,6 +36,16 @@ nnnegbin(y, x, standard, offset, start, control = list())
 }
   \item{control}{
 	an \code{\link{addreg.control}} object, which controls the fitting process.
+}
+  \item{accelerate}{
+    a character string that determines the acceleration
+  algorithm to be used, (partially) matching one of \code{"em"} (no acceleration -- the default), 
+  \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
+  for further details. Note that \code{"decme"} is not permitted.
+}
+  \item{control.method}{
+	a list of control parameters for the acceleration algorithm. See \code{\link[turboEM]{turboem}}
+	for details of the parameters that apply to each algorithm. If not specified, the defaults are used.
 }
 }
 \details{
@@ -76,12 +88,16 @@ space --- i.e. are any of the \code{coefficients < control$bound.tol}?}
 \item{nn.design}{the non-negative \code{x} matrix used.}
 }
 \references{
+Donoghoe, M. W. and I. C. Marschner (2016). Estimation of adjusted rate
+differences using additive negative binomial regression. \emph{Statistics
+in Medicine} 35(18): 3166--3178.
+
 Hurvich, C. M., J. S. Simonoff and C.-L. Tsai (1998). Smoothing parameter 
 selection in non-parametric regression using an improved Akaike 
 information criterion.
 \emph{Journal of the Royal Statistical Society: Series B (Statistical Methodology)} 60(2): 271--293.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}.
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}.
 }
 \keyword{ regression }

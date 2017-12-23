@@ -12,7 +12,9 @@ terms.
 \usage{
 addreg.smooth(formula, mono = NULL, family, data, standard, subset, 
               na.action, offset, control = list(...), model = TRUE, 
-              model.addreg = FALSE, ...)
+              model.addreg = FALSE, method = c("cem", "em"), 
+              accelerate = c("em", "squarem", "pem", "qn"),
+              control.method = list(), ...)
 }
 \arguments{
   \item{formula}{
@@ -81,7 +83,7 @@ addreg.smooth(formula, mono = NULL, family, data, standard, subset,
   specified their sum is used. See
   \code{\link{model.offset}}.
   
-	Ignored for binomial family.
+	Ignored for binomial family; not yet implemented for negative binomial models.
 }
   \item{control}{
 	list of parameters for controlling the
@@ -96,6 +98,25 @@ addreg.smooth(formula, mono = NULL, family, data, standard, subset,
   \item{model.addreg}{
 	a logical value indicating whether the fitted \code{addreg}
 	object should be included as a component of the returned value.
+}
+  \item{method}{
+    a character string that determines which EM-type algorithm to use
+  to find the MLE: \code{"cem"} for the combinatorial EM algorithm,
+  which cycles through a sequence of constrained parameter spaces, or
+  \code{"em"} for a single EM algorithm based on an overparameterised
+  model.
+}
+  \item{accelerate}{
+    a character string that determines the acceleration
+  algorithm to be used, (partially) matching one of \code{"em"} (no acceleration --- the default), 
+  \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
+  for further details. Note that \code{"decme"} is not permitted.
+}
+  \item{control.method}{
+    a list of control parameters for the acceleration algorithm, which are passed to 
+    the \code{control.method} argument of \code{\link[turboEM]{turboem}}.
+  
+    If any items are not specified, the defaults are used.
 }
   \item{\dots}{
 	arguments to be used to form the default
@@ -114,6 +135,13 @@ The method partitions the parameter space associated with the semi-parametric pa
 model into a sequence of constrained parameter spaces, and defines a fully parametric 
 \code{addreg} model for each. The model with the highest log-likelihood is the MLE for 
 the semi-parametric model (see Donoghoe and Marschner, 2015).
+
+Acceleration of the EM algorithm can be achieved through the
+methods of the \pkg{\link[turboEM:turboem]{turboEM}} package, specified
+through the \code{accelerate} argument. However, note that these
+methods do not have the guaranteed convergence of the standard
+EM algorithm, particularly when the MLE is on the boundary of
+its (possibly constrained) parameter space.
 }
 \value{
 An object of class \code{"addreg.smooth"}, which contains the same objects as class
@@ -139,7 +167,7 @@ Marschner, I. C. (2014). Combinatorial EM algorithms.
 \emph{Statistics and Computing} 24(6): 921--940.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 }
 \seealso{
 \code{\link{addreg}}
@@ -154,7 +182,7 @@ m1 <- addreg.smooth(cbind(y, n-y) ~ B(x1, knot.range = 1:3) + factor(x2), mono =
   data = dat, family = binomial, trace = 1)
 \donttest{
 plot(m1, at = data.frame(x2 = 0:1))
-points(dat$x1, dat$y / dat$n)
+points(dat$x1, dat$y / dat$n, col = rainbow(2)[dat$x2 + 1], pch = 20)
 }
 }
 \keyword{ regression }

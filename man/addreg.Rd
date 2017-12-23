@@ -13,8 +13,10 @@ Additive Regression for Discrete Data
 }
 \usage{
 addreg(formula, mono = NULL, family, data, standard, subset, na.action,
-       start = NULL, offset, control = list(...), model = TRUE, warn = TRUE,
-       ...)
+       start = NULL, offset, control = list(...), model = TRUE, 
+       method = c("cem", "em"),
+       accelerate = c("em", "squarem", "pem", "qn"), 
+       control.method = list(), warn = TRUE, ...)
 }
 \arguments{
   \item{formula}{
@@ -86,7 +88,7 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
   specified their sum is used. See
   \code{\link{model.offset}}.
   
-	Ignored for binomial family.
+	Ignored for binomial family; not yet implemented for negative binomial models.
 }
   \item{control}{
 	list of parameters for controlling the
@@ -97,6 +99,25 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
 	a logical value indicating whether the \emph{model frame} 
 	(and, for binomial models, the equivalent Poisson model)
 	should be included as a component of the returned value.
+}
+  \item{method}{
+  a character string that determines which algorithm to use to
+  find the MLE: \code{"cem"} for the combinatorial EM algorithm,
+  which cycles through a sequence of constrained parameter spaces,
+  or \code{"em"} for a single EM algorithm based on an
+  overparameterised model.
+}
+  \item{accelerate}{
+    a character string that determines the acceleration
+  algorithm to be used, (partially) matching one of \code{"em"} (no acceleration --- the default), 
+  \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
+  for further details. Note that \code{"decme"} is not permitted.
+}
+  \item{control.method}{
+    a list of control parameters for the acceleration algorithm, which are passed to 
+    the \code{control.method} argument of \code{\link[turboEM]{turboem}}.
+  
+    If any items are not specified, the defaults are used.
 }
   \item{warn}{
 	a logical indicating whether or not warnings should be
@@ -149,8 +170,15 @@ space, and the EM algorithm is applied within each
 restricted parameter space in order to find a collection of
 restricted maxima of the log-likelihood function, from
 which can be obtained the global maximum over the full
-parameter space. See Marschner (2010) and Donoghoe and 
-Marschner (2014) for further details.
+parameter space. See Marschner (2010), Donoghoe and 
+Marschner (2014) and Donoghoe and Marschner (2016) for further details.
+
+Acceleration of the EM algorithm can be achieved through the
+methods of the \pkg{\link[turboEM:turboem]{turboEM}} package, specified
+through the \code{accelerate} argument. However, note that these
+methods do not have the guaranteed convergence of the standard
+EM algorithm, particularly when the MLE is on the boundary of
+its (possibly constrained) parameter space.
 }
 \value{
 \code{addreg} returns an object of class \code{"addreg"},
@@ -200,6 +228,10 @@ Donoghoe, M. W. and I. C. Marschner (2014). Stable computational methods
 for additive binomial models with application to adjusted risk differences. 
 \emph{Computational Statistics and Data Analysis} 80: 184--196.
 
+Donoghoe, M. W. and I. C. Marschner (2016). Estimation of adjusted rate
+differences using additive negative binomial regression. \emph{Statistics
+in Medicine} 35(18): 3166--3178.
+
 Hurvich, C. M., J. S. Simonoff and C.-L. Tsai (1998). Smoothing parameter 
 selection in nonparametric regression using an improved Akaike 
 information criterion.
@@ -213,7 +245,7 @@ Marschner, I. C. (2014). Combinatorial EM algorithms.
 \emph{Statistics and Computing} 24(6): 921--940.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 }
 \note{
 Due to the way the covariate space is defined in the CEM algorithm,
@@ -240,6 +272,15 @@ fit.glm <- glm(Satellites ~ width.shifted + factor(Dark) + factor(GoodSpine),
   
 fit.addreg <- addreg(formula(fit.glm), family = poisson, data = crabs.boot,
   trace = 1)
+
+# Speed up convergence by using single EM algorithm
+fit.addreg.em <- update(fit.addreg, method = "em")
+
+# Speed up convergence by using acceleration methods
+fit.addreg.acc <- update(fit.addreg, accelerate = "squarem")
+fit.addreg.em.acc <- update(fit.addreg.em, accelerate = "squarem")
+  
+# Usual S3 methods work on addreg objects
 summary(fit.addreg)
 vcov(fit.addreg)
 confint(fit.addreg)

@@ -9,7 +9,9 @@ using an EM algorithm,
 where each of the coefficients is restricted to be non-negative.
 }
 \usage{
-nnpois(y, x, standard, offset, start, control = list())
+nnpois(y, x, standard, offset, start, control = addreg.control(),
+       accelerate = c("em", "squarem", "pem", "qn"),
+       control.method = list())
 }
 \arguments{
   \item{y}{
@@ -32,6 +34,16 @@ nnpois(y, x, standard, offset, start, control = list())
 }
   \item{control}{
 	an \code{\link{addreg.control}} object, which controls the fitting process.
+}
+  \item{accelerate}{
+    a character string that determines the acceleration
+  algorithm to be used, (partially) matching one of \code{"em"} (no acceleration -- the default), 
+  \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
+  for further details. Note that \code{"decme"} is not permitted.
+}
+  \item{control.method}{
+	a list of control parameters for the acceleration algorithm. See \code{\link[turboEM]{turboem}}
+	for details of the parameters that apply to each algorithm. If not specified, the defaults are used.
 }
 }
 \details{
@@ -88,7 +100,7 @@ and applications in clinical epidemiology. \emph{Computational
 Statistics and Data Analysis} 56(5): 1115--1130.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}.
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}.
 
 This function is based on code from Marschner, Gillett and O'Connell (2012) written by Alexandra Gillett.
 }

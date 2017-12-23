@@ -12,8 +12,8 @@ algorithms with more stable convergence properties than standard methods.
 \tabular{ll}{
 Package: \tab addreg\cr
 Type: \tab Package\cr
-Version: \tab 2.0\cr
-Date: \tab 2015-05-12\cr
+Version: \tab 3.0\cr
+Date: \tab 2017-12-20\cr
 License: \tab GPL (>= 2)\cr
 }
 This package provides methods to fit generalised linear models (GLMs) and generalised additive
@@ -28,18 +28,26 @@ The second is when a flexible semi-parametric component is desired in these mode
 main purposes of this package is to provide parametric and semi-parametric adjustment of risk 
 differences and rate differences.
 
-The computational method is a combinatorial EM algorithm (Marschner, 2014), 
-which accommodates the parameter constraints and is more stable than iteratively
-reweighted least squares. A collection of restricted parameter spaces is defined
-which covers the full parameter space, and the EM algorithm is applied within each
+Two approaches based on the EM algorithm can be used. These methods accommodate the required
+parameter constraints and are more stable than iteratively reweighted least squares. In a 
+combinatorial EM algorithm (Marschner, 2014), a collection of restricted parameter spaces is 
+defined which covers the full parameter space, and the EM algorithm is applied within each
 restricted parameter space in order to find a collection of restricted maxima of
 the log-likelihood function, from which can be obtained the global maximum over the
 full parameter space.
+
+In the expanded EM approach, additional parameters are added to the model,
+and an EM algorithm finds the MLE of this overparameterised model by imposing
+constraints on each individual parameter. This requires a single application of
+the EM algorithm.
+
+In either case, the EM algorithm may be accelerated by using the capabilities of the
+\pkg{\link[turboEM:turboem]{turboEM}} package.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 
-Maintainer: Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Maintainer: Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 }
 \references{
 Donoghoe, M. W. and I. C. Marschner (2014). Stable computational methods
@@ -49,6 +57,10 @@ for additive binomial models with application to adjusted risk differences.
 Donoghoe, M. W. and I. C. Marschner (2015). Flexible regression models for rate 
 differences, risk differences and relative risks. \emph{International Journal of 
 Biostatistics} 11(1): 91--108.
+
+Donoghoe, M. W. and I. C. Marschner (2016). Estimation of adjusted rate
+differences using additive negative binomial regression. \emph{Statistics
+in Medicine} 35(18): 3166--3178.
 
 Marschner, I. C. (2010). Stable computation of maximum likelihood estimates
 in identity link Poisson regression. \emph{Journal of Computational and 
